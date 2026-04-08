@@ -5,17 +5,10 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, Callb
 TOKEN = os.getenv("8386231124:AAEZETeEr9Y76JR9pUwP8lVP5r3C6vA-HOs")
 ADMIN_ID = 6556890316
 
-# TOKEN CHECK
-if not TOKEN:
-    print("❌ TOKEN NOT FOUND")
-    exit()
-
 # START
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
-
-    # FIX (important)
-    context.bot_data[user_id] = True
+    context.application.user_data[user_id] = True
 
     keyboard = [
         [InlineKeyboardButton("💎 1 Month - $3.99", url="https://rzp.io/rzp/Oa0lD2k")],
@@ -38,22 +31,17 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_id = query.from_user.id
 
-    # send to admin
     await context.bot.send_message(
         chat_id=ADMIN_ID,
-        text=f"💰 New Payment Request\nUser ID: {user_id}"
+        text=f"New Payment User ID: {user_id}"
     )
 
-    await query.message.reply_text(f"✅ Sent to admin!\nYour ID: {user_id}")
+    await query.message.reply_text(f"Your ID: {user_id}")
 
 # ADMIN ACCESS
 async def access(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.from_user.id == ADMIN_ID:
-        try:
-            user_id = int(context.args[0])
-        except:
-            await update.message.reply_text("❌ Use: /access USER_ID")
-            return
+        user_id = int(context.args[0])
 
         await context.bot.send_message(chat_id=user_id, text="Payment Successful 😏")
 
@@ -64,13 +52,13 @@ async def access(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await context.bot.send_message(
             chat_id=user_id,
-            text="🔓 Private Access:\nhttps://t.me/+1R4StxEOBEQ5YmNl"
+            text="Join Channel:\nhttps://t.me/+1R4StxEOBEQ5YmNl"
         )
 
-# OFFER BROADCAST
+# OFFER
 async def offer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.from_user.id == ADMIN_ID:
-        for user_id in context.bot_data:
+        for user_id in context.application.user_data:
             try:
                 await context.bot.send_message(
                     chat_id=user_id,
@@ -79,16 +67,12 @@ async def offer(update: Update, context: ContextTypes.DEFAULT_TYPE):
             except:
                 pass
 
-# MAIN
 app = ApplicationBuilder().token(TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CallbackQueryHandler(button))
 app.add_handler(CommandHandler("access", access))
 app.add_handler(CommandHandler("offer", offer))
-
-print("✅ Bot Running...")
-app.run_polling()
 
 print("Bot Running...")
 app.run_polling()
