@@ -2,7 +2,7 @@ import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, CallbackQueryHandler
 
-TOKEN = os.getenv("8386231124:AAEgLiSpQlfAlPUCIwRfLSUBEKTQHCNQBAM")
+TOKEN = os.getenv("8386231124:AAEZETeEr9Y76JR9pUwP8lVP5r3C6vA-HOs")
 ADMIN_ID = 6556890316
 
 # TOKEN CHECK
